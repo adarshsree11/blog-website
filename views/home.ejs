@@ -3,6 +3,14 @@
 <h1>Home</h1>
 
 <p><%= homeStartingContent %> </p>
-<% console.log(posts) %> 
+
+<% for(var i=0; i<posts.length; i++){  %>
+    <% var truncatedContent = posts[i].content.substring(0, 120); %>
+    <% var postTitle =posts[i].title; %> 
+    <h1><%= posts[i].title %> </h1> 
+    <p><%= truncatedContent%>.....
+        <a href="posts/<%= postTitle %>">Read More</a>
+    </p>
+<% } %> 
 
 <%- include('partials/footer') %> 
