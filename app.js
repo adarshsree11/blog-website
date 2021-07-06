@@ -26,12 +26,18 @@ const postSchema = {
 
 const Post = mongoose.model("Post", postSchema);
 
-// var posts = [];
+var posts = [];
 
 app.get("/", function(req, res){
-  res.render("home", {homeStartingContent: homeStartingContent,
-    posts: posts  
-  });
+  Post.find({}, function(err,result){
+    if(!err){
+      console.log(result);
+      res.render("home", {homeStartingContent: homeStartingContent,
+        posts: result  
+      });
+    }
+  })
+  
 })
 
 app.get("/about", function(req, res){
@@ -52,18 +58,22 @@ app.post("/compose", function(req, res){
     content: req.body.postBody
   });
   //posts.push(post);
-  post.save();
-  res.redirect("/");
+  post.save(function(err){
+    if (!err){
+      res.redirect("/");
+    }
+  });
+ 
 })
 
-app.get("/posts/:postName", function(req, res){
-  requestedTitle = _.lowerCase(req.params.postName);
-  posts.forEach(function(post){
-    var postTitle = _.lowerCase(post.title);
-    if(requestedTitle == postTitle){
-      res.render("post", {postTitle: postTitle,
-      postContent: post.content
-    });
+app.get("/posts/:postId", function(req, res){
+  const requestedPostId = req.params.postId
+
+  Post.findOne({_id: requestedPostId}, function(err, result){
+    if(!err){
+      res.render("post", {postTitle: result.title,
+        postContent:  result.content
+      });
     }
   })
 })
